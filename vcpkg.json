@@ -1,8 +1,17 @@
 {
   "name": "echo",
   "version": "0.1.0",
+  "builtin-baseline": "1f5e0348089e8a9b187f57d42866ebc871e815da",
   "dependencies": [
-    "sdl2"
-  ],
-  "builtin-baseline": "1f5e0348089e8a9b187f57d42866ebc871e815da"
+    {
+      "name": "sdl2",
+      "platform": "windows"
+    },
+    {
+      "name": "sdl2",
+      "default-features": false,
+      "features": ["x11", "wayland"],
+      "platform": "linux"
+    }
+  ]
 }
