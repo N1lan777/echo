@@ -28,12 +28,6 @@ void sdl_loop()
     }
 
     bool running = true;
-    SDL_Rect rect = (SDL_Rect) {
-        .x = (int)WIN_X / 2,
-        .y = (int)WIN_Y / 2,
-        .w = 50,
-        .h = 50,
-    };
 
     while (running) {
         SDL_Event event;
@@ -49,11 +43,6 @@ void sdl_loop()
 
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
-
-        // SDL_Delay(10);
-
-        // SDL_SetRenderDrawColor(renderer, rand()%255, rand()%255, rand()%255, 255);
-        // SDL_RenderFillRect(renderer, &rect);
 
         SDL_RenderPresent(renderer);
     }
