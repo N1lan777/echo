@@ -1,6 +1,6 @@
 #pragma once
 #include <stdbool.h>
-
+#include <SDL.h>
 #define MAX_BLOCKS 50
 
 typedef struct {
@@ -35,5 +35,5 @@ typedef struct {
 
 void game_init (GameState* state);
 void game_update (GameState* state, float dt);
-
+void game_handle_input(GameState* state, const Uint8* keys, float dt);
 
