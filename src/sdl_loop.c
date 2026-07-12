@@ -1,52 +1,56 @@
-#include <SDL.h>
-#include <stdio.h>
+#include <SDL2/SDL.h>
 #include <stdbool.h>
 #include "../include/sdl_loop.h"
+#include "../include/game.h"
 
 
-void sdl_loop()
+static void _render_impl(GameState* state, SDL_Renderer** renderer)
 {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        fputs(SDL_GetError(), stderr);
-        return;
-    }
+    SDL_SetRenderDrawColor(*renderer, 0, 0, 0, 255);
+    SDL_RenderClear(*renderer);
 
-    SDL_Window* window = SDL_CreateWindow(GAME_TITLE, SDL_WINDOWPOS_CENTERED,
-                                       SDL_WINDOWPOS_CENTERED,
-                                       WIN_X, WIN_Y,
-                                       SDL_WINDOW_SHOWN);
-    if (!window) {
-        fputs(SDL_GetError(), stderr);
-        return;
-    }
-
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
-    if (!renderer) {
-        fputs(SDL_GetError(), stderr);
-        return;
-    }
-
-    bool running = true;
-
-    while (running) {
-        SDL_Event event;
-
-        while (SDL_PollEvent(&event)) {
-            switch (event.type)
-                case SDL_QUIT:
-                    running = false;
-                    break;
-        }
-
-        if (!running) break;
-
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
-
-        SDL_RenderPresent(renderer);
-    }
-
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
+    SDL_RenderPresent(*renderer);
 }
+
+
+void render(GameState* state, SDL_Renderer** renderer)
+{
+    _render_impl(state, renderer);
+}
+
+
+/*
+#include "game.h"
+#include <SDL.h>
+
+int main(int argc, char* argv[]) {
+    GameState state;
+    game_init(&state);
+    SDL_Init(SDL_INIT_VIDEO);
+    SDL_Window* win = SDL_CreateWindow("echo", 100, 100, 800, 600, SDL_WINDOW_SHOWN);
+    Uint32 last_time = SDL_GetTicks();
+    while (state.is_running) {
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                state.is_running = false;
+            }
+        }
+        Uint32 Now_time = SDL_GetTicks();
+        float dt    = (Now_time - last_time)/ 1000.0f ;
+        last_time = Now_time;
+
+        const Uint8* keys = SDL_GetKeyboardState(NULL);
+        game_handle_input(&state, keys, dt);
+        game_update(&state, dt);
+
+        // TODO: render(&state, renderer); — Alegen добавляет здесь свой вызов рендера
+
+        SDL_Delay(16);
+
+    }
+    SDL_DestroyWindow(win);
+    SDL_Quit();
+    return 0;
+}
+*/
