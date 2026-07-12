@@ -21,6 +21,9 @@ int main(int argc, char* argv[]) {
         const Uint8* keys = SDL_GetKeyboardState(NULL);
         game_handle_input(&state, keys, dt);
         game_update(&state, dt);
+
+        // TODO: render(&state, renderer); — Alegen добавляет здесь свой вызов рендера
+        
         SDL_Delay(16);
 
     }
