@@ -1,7 +1,6 @@
 #include <SDL.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include <stdbool.h>
 #include "../include/sdl_loop.h"
 
 
