@@ -1,6 +1,8 @@
 #pragma once
+
 #include <stdbool.h>
-#include <SDL.h>
+#include <SDL2/SDL.h>
+
 #define MAX_BLOCKS 50
 
 typedef struct {

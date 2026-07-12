@@ -1,5 +1,7 @@
+#include <SDL2/SDL.h>
 #include "game.h"
 #include "stdio.h"
+
  void game_init(GameState* state){
     state -> score = 0;
     state -> is_running = true;
