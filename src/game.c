@@ -41,6 +41,17 @@ void game_update (GameState * state, float dt){
    if (state->ball.x >=state->paddle.x && state->ball.x <=paddle_right && state->ball.y>=state->paddle.y && state->ball.y <=paddle_bottom){
       state->ball.vy = -(state->ball.vy);
    }
+   for (int i = 0; i < MAX_BLOCKS; ++i){  
+      if(state->blocks[i].hp > 0 ){
+         float block_right = state->blocks[i].x + state->blocks[i].width;
+         float block_bottom = state->blocks[i].y + state->blocks[i].height;
+         if (state->ball.x >=state->blocks[i].x && state->ball.x <=block_right && state->ball.y>=state->blocks[i].y && state->ball.y <=block_bottom){
+            state->ball.vy = -(state->ball.vy);
+            state->blocks[i].hp--;
+         }
+      }
+
+   }
 }
 void game_handle_input(GameState* state, const Uint8* keys, float dt){
    if (keys[SDL_SCANCODE_LEFT]){
