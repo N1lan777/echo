@@ -34,6 +34,13 @@ void game_update (GameState * state, float dt){
    if (state->ball.y >= 600 || state->ball.y <= 0) {
       state->ball.vy = -(state->ball.vy);
    }
+
+   float paddle_right = state->paddle.width + state->paddle.x;
+   float paddle_bottom = state->paddle.height + state->paddle.y;  
+   
+   if (state->ball.x >=state->paddle.x && state->ball.x <=paddle_right && state->ball.y>=state->paddle.y && state->ball.y <=paddle_bottom){
+      state->ball.vy = -(state->ball.vy);
+   }
 }
 void game_handle_input(GameState* state, const Uint8* keys, float dt){
    if (keys[SDL_SCANCODE_LEFT]){
