@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include "game.h"
 
 
@@ -10,4 +10,4 @@
 #define WIN_Y 768
 
 
-void render(GameState* state, SDL_Renderer** renderer);
+void render(GameState* state, SDL_Renderer* renderer);
