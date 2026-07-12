@@ -28,10 +28,10 @@ static void _render_impl(GameState* state, SDL_Renderer* renderer, const SDL_Col
 
         SDL_SetRenderDrawColor(renderer, b_c[i].r, b_c[i].g, b_c[i].b, b_c[i].a);
         SDL_RenderFillRect(renderer, &r);
-
-        SDL_SetRenderDrawColor(renderer, 128, 0, 128, 255);
-        SDL_RenderFillRect(renderer, &p);
     }
+
+    SDL_SetRenderDrawColor(renderer, 128, 0, 128, 255);
+    SDL_RenderFillRect(renderer, &p);
 
     SDL_RenderPresent(renderer);
 }
