@@ -31,8 +31,11 @@ void game_update (GameState * state, float dt){
    if (state->ball.x >= 800 || state->ball.x <= 0) {
       state->ball.vx = -(state->ball.vx);
    }
-   if (state->ball.y >= 600 || state->ball.y <= 0) {
+   if (state->ball.y <= 0) {
       state->ball.vy = -(state->ball.vy);
+   }
+   if (state->ball.y >= 600){
+      state->is_running = false;
    }
 
    float paddle_right = state->paddle.width + state->paddle.x;
