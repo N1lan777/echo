@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdbool.h>
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 #define MAX_BLOCKS 50
 

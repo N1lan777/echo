@@ -1,10 +1,12 @@
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <stdio.h>
 #include "game.h"
 #include "sdl_loop.h"
+#include <stdlib.h>
+#include <time.h>
 
 
-int main(int argc, char* argv[]) {
+int main(void) {
     GameState state;
     game_init(&state);
 
@@ -29,6 +31,15 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
+    srand(time(NULL));
+    SDL_Color blocks_color[MAX_BLOCKS];
+    for (int i = 0; i < MAX_BLOCKS; i++) {
+        blocks_color[i].r = rand()%255;
+        blocks_color[i].g = rand()%255;
+        blocks_color[i].b = rand()%255;
+        blocks_color[i].a = rand()%255;
+    }
+
     Uint32 last_time = SDL_GetTicks();
     while (state.is_running) {
         SDL_Event event;
@@ -42,17 +53,16 @@ int main(int argc, char* argv[]) {
         if (!state.is_running) break;
 
         Uint32 Now_time = SDL_GetTicks();
-        float dt    = (Now_time - last_time)/ 1000.0f ;
+        float dt = (Now_time - last_time)/ 1000.0f ;
         last_time = Now_time;
 
         const Uint8* keys = SDL_GetKeyboardState(NULL);
         game_handle_input(&state, keys, dt);
         game_update(&state, dt);
 
-        render(&state, renderer);
+        render(&state, renderer, blocks_color);
         
         SDL_Delay(16);
-
     }
 
     SDL_DestroyWindow(window);

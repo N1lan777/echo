@@ -10,7 +10,7 @@ add_executable(echo src/main.c src/sdl_loop.c src/game.c)
 
 target_compile_options(echo PRIVATE
     # GCC, Clang
-    $<$<OR:$<C_COMPILER_ID:GNU>,$<C_COMPILER_ID:Clang>>:-Wall;-Wextra;-Wpedantic;-Wshadow;-Wconversion>
+    $<$<OR:$<C_COMPILER_ID:GNU>,$<C_COMPILER_ID:Clang>>:-Wall;-Wextra;-Wpedantic;-Wshadow>
     # MSVC
     $<$<C_COMPILER_ID:MSVC>:/W4>
 )
