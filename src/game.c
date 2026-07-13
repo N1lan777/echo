@@ -53,6 +53,15 @@ void game_update (GameState * state, float dt){
             state->blocks[i].hp--;
          }
       }
+   }
+   int block_alive = 0;
+   for (int i = 0; i < MAX_BLOCKS; ++i){
+      if (state->blocks[i].hp > 0){
+         block_alive++;
+      }
+   }
+   if (block_alive == 0){
+      state->won = true;
 
    }
 }
