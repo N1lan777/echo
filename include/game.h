@@ -31,6 +31,7 @@ typedef struct {
     bool is_running;
     short score;
     Block blocks[MAX_BLOCKS];
+    bool won;
 } GameState;
 
 void game_init (GameState* state);
