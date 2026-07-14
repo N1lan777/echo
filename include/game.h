@@ -3,6 +3,16 @@
 #include <SDL.h>
 #define MAX_BLOCKS 50
 
+typedef enum {
+    MENU,
+    GAME,
+    PAUSE,
+    HELP,
+    PLAYERS,
+    RECORD,
+    EXIT,
+} GameScreen;
+
 typedef struct {
     float x;
     float y;
@@ -32,6 +42,7 @@ typedef struct {
     short score;
     Block blocks[MAX_BLOCKS];
     bool won;
+    GameScreen gamescreen;
 } GameState;
 
 void game_init (GameState* state);

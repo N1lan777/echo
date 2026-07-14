@@ -1,8 +1,9 @@
 #include "game.h"
 #include "stdio.h"
- void game_init(GameState* state){
+ void game_init(GameState* state){ 
     state -> score = 0;
     state -> is_running = true;
+    state -> gamescreen = MENU; 
 
     state -> ball.x = 400;
     state -> ball.y = 300;
@@ -26,6 +27,9 @@
  }
 
 void game_update (GameState * state, float dt){
+   if (state->gamescreen != GAME) {
+        return;
+    }
    state -> ball.x = state -> ball.x + state -> ball.vx * dt;
    state -> ball.y = state -> ball.y + state -> ball.vy * dt;
    if (state->ball.x >= 800 || state->ball.x <= 0) {
