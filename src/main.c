@@ -13,6 +13,9 @@ int main(int argc, char* argv[]) {
             if (event.type == SDL_QUIT) {
                 state.is_running = false;
             }
+            if (event.type == SDL_MOUSEBUTTONDOWN){
+                game_handle_click(&state, event.button.x, event.button.y);
+            }
         }
         Uint32 Now_time = SDL_GetTicks();
         float dt    = (Now_time - last_time)/ 1000.0f ;

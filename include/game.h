@@ -48,4 +48,5 @@ typedef struct {
 void game_init (GameState* state);
 void game_update (GameState* state, float dt);
 void game_handle_input(GameState* state, const Uint8* keys, float dt);
+void game_handle_click(GameState* state, int mouse_x, int mouse_y);
 
