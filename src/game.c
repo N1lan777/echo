@@ -32,6 +32,7 @@ void game_update (GameState * state, float dt){
     }
    state -> ball.x = state -> ball.x + state -> ball.vx * dt;
    state -> ball.y = state -> ball.y + state -> ball.vy * dt;
+
    if (state->ball.x >= 800 || state->ball.x <= 0) {
       state->ball.vx = -(state->ball.vx);
    }
@@ -52,6 +53,7 @@ void game_update (GameState * state, float dt){
       if(state->blocks[i].hp > 0 ){
          float block_right = state->blocks[i].x + state->blocks[i].width;
          float block_bottom = state->blocks[i].y + state->blocks[i].height;
+         
          if (state->ball.x >=state->blocks[i].x && state->ball.x <=block_right && state->ball.y>=state->blocks[i].y && state->ball.y <=block_bottom && state->ball.vy > 0){
             state->ball.vy = -(state->ball.vy);
             state->blocks[i].hp--;
@@ -66,7 +68,6 @@ void game_update (GameState * state, float dt){
    }
    if (block_alive == 0){
       state->won = true;
-
    }
 }
 void game_handle_input(GameState* state, const Uint8* keys, float dt){
@@ -82,8 +83,16 @@ void game_handle_click(GameState* state, int mouse_x, int mouse_y) {
       if (mouse_x >= 350 && mouse_x <= 450 && mouse_y >= 250 && mouse_y <= 300){
          state -> gamescreen = GAME;
       }
-      if (mouse_x >=350 && mouse_x <=450 && mouse_y >=190 && mouse_y <=240){
+      if (mouse_x >= 350 && mouse_x <= 450 && mouse_y >= 190 && mouse_y <=240){
          state -> is_running = false;
+      }
+   }
+   if (mouse_x >=10 && mouse_x <=40 && mouse_y >=550 && mouse_y <=580 ){
+      if (state -> gamescreen == GAME){
+         state -> gamescreen = PAUSE;
+      }
+      else if (state -> gamescreen == PAUSE ){
+         state -> gamescreen = GAME;
       }
    }
 }
