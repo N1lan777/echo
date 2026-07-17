@@ -106,3 +106,16 @@ void game_save (Leaderboard* board){
    }
    fclose(file);
 }
+void game_loading(Leaderboard* board){
+   FILE* file = fopen(SCORES_FILE,"r");
+   if (file == NULL){
+      board -> count_scores = 0;
+      return;
+   }
+   int i;
+   for (i = 0; i < MAX_SCORES && fscanf(file,"%s,%hd ", board -> scores[i].name, &(board -> scores[i].score)) == 2; ++i){
+   }
+   board->count_scores = i;
+
+   fclose(file);
+}
