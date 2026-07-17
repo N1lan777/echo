@@ -9,6 +9,7 @@
     state -> ball.y = 300;
     state -> ball.vx = 50;
     state -> ball.vy = 50;
+    state -> ball.r = 10;
 
     state -> paddle.x = 375;
     state -> paddle.y = 550;
@@ -33,20 +34,20 @@ void game_update (GameState * state, float dt){
    state -> ball.x = state -> ball.x + state -> ball.vx * dt;
    state -> ball.y = state -> ball.y + state -> ball.vy * dt;
 
-   if (state->ball.x >= 800 || state->ball.x <= 0) {
+   if (state->ball.x + state -> ball.r >= 800 || state->ball.x - state -> ball.r <= 0 ) {
       state->ball.vx = -(state->ball.vx);
    }
-   if (state->ball.y <= 0) {
+   if (state->ball.y - state -> ball.r <= 0) {
       state->ball.vy = -(state->ball.vy);
    }
-   if (state->ball.y >= 600){
+   if (state->ball.y + state -> ball.r >= 600){
       state->is_running = false;
    }
 
    float paddle_right = state->paddle.width + state->paddle.x;
    float paddle_bottom = state->paddle.height + state->paddle.y;  
    
-   if (state->ball.x >=state->paddle.x && state->ball.x <=paddle_right && state->ball.y>=state->paddle.y && state->ball.y <=paddle_bottom && state->ball.vy > 0){
+   if (state->ball.x + state -> ball.r >=state->paddle.x && state->ball.x - state -> ball.r <=paddle_right && state->ball.y + state -> ball.r >=state->paddle.y && state->ball.y - state -> ball.r <=paddle_bottom && state->ball.vy > 0){
       state->ball.vy = -(state->ball.vy);
    }
    for (int i = 0; i < MAX_BLOCKS; ++i){  
@@ -54,7 +55,7 @@ void game_update (GameState * state, float dt){
          float block_right = state->blocks[i].x + state->blocks[i].width;
          float block_bottom = state->blocks[i].y + state->blocks[i].height;
          
-         if (state->ball.x >=state->blocks[i].x && state->ball.x <=block_right && state->ball.y>=state->blocks[i].y && state->ball.y <=block_bottom && state->ball.vy > 0){
+         if (state->ball.x + state->ball.r >=state->blocks[i].x && state->ball.x - state->ball.r <=block_right && state->ball.y + state->ball.r >=state->blocks[i].y && state->ball.y - state->ball.r <=block_bottom && state->ball.vy > 0){
             state->ball.vy = -(state->ball.vy);
             state->blocks[i].hp--;
          }
@@ -113,9 +114,9 @@ void game_loading(Leaderboard* board){
       return;
    }
    int i;
-   for (i = 0; i < MAX_SCORES && fscanf(file,"%s,%hd ", board -> scores[i].name, &(board -> scores[i].score)) == 2; ++i){
+   for (i = 0; i < MAX_SCORES &&
+      fscanf(file,"%s,%hd ", board -> scores[i].name, &(board -> scores[i].score)) == 2; ++i){
    }
    board->count_scores = i;
-
    fclose(file);
 }

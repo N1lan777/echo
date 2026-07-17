@@ -21,6 +21,7 @@ typedef struct {
     float y;
     float vx;
     float vy;
+    float r;
 } Ball;
 
 typedef struct {
@@ -63,4 +64,3 @@ void game_handle_input(GameState* state, const Uint8* keys, float dt);
 void game_handle_click(GameState* state, int mouse_x, int mouse_y);
 void game_loading(Leaderboard* board);
 void game_save(Leaderboard* board);
-
