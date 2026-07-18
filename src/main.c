@@ -40,7 +40,8 @@ int main(void) {
         blocks_color[i].a = rand()%255;
     }
 
-    Uint32 last_time = SDL_GetTicks();
+    Uint32 last_time, Now_time;
+    last_time = SDL_GetTicks();
     while (state.is_running) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -48,12 +49,14 @@ int main(void) {
                 state.is_running = false;
                 break;
             }
+            if (event.type == SDL_MOUSEBUTTONDOWN)
+                game_handle_click(&state, event.button.x, event.button.y);
         }
 
         if (!state.is_running) break;
 
-        Uint32 Now_time = SDL_GetTicks();
-        float dt = (Now_time - last_time)/ 1000.0f ;
+        Now_time = SDL_GetTicks();
+        float dt = (Now_time - last_time) / 1000.0f ;
         last_time = Now_time;
 
         const Uint8* keys = SDL_GetKeyboardState(NULL);
@@ -61,7 +64,7 @@ int main(void) {
         game_update(&state, dt);
 
         render(&state, renderer, blocks_color);
-        
+
         SDL_Delay(16);
     }
 
