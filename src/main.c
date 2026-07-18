@@ -33,6 +33,7 @@ int main(int argc, char* argv[]) {
 
     }
     game_leaderboard(&board,"player",state.score);
+    game_sort(&board);
     game_save(&board);
     SDL_DestroyWindow(win);
     SDL_Quit();
