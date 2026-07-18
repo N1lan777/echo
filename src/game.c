@@ -105,9 +105,20 @@ void game_handle_input(GameState* state, const Uint8* keys, float dt)
 void game_handle_click(GameState* state, int mouse_x, int mouse_y)
 {
     if (state->gamescreen == MENU) {
-        if (mouse_x >= 350 && mouse_x <= 450 && mouse_y >= 250 && mouse_y <= 300)
+        if (
+            mouse_x >= GAME_BUTTON_X &&
+            mouse_x <= GAME_BUTTON_X + GAME_BUTTON_W &&
+            mouse_y >= GAME_BUTTON_Y &&
+            mouse_y <= GAME_BUTTON_Y + GAME_BUTTON_H
+        )
             state->gamescreen = GAME;
-        if (mouse_x >= 350 && mouse_x <= 450 && mouse_y >= 190 && mouse_y <= 240)
+
+        if (
+            mouse_x >= EXIT_BUTTON_X &&
+            mouse_x <= EXIT_BUTTON_X + EXIT_BUTTON_W &&
+            mouse_y >= EXIT_BUTTON_Y &&
+            mouse_y <= EXIT_BUTTON_Y + EXIT_BUTTON_H
+        )
             state->is_running = false;
     }
 

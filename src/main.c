@@ -40,30 +40,57 @@ int main(void) {
         blocks_color[i].a = rand()%255;
     }
 
+    SDL_Color color_game_b = (SDL_Color) {
+        rand()%255,
+        rand()%255,
+        rand()%255,
+        rand()%255
+    };
+
+    SDL_Color color_exit_b = (SDL_Color) {
+        rand()%255,
+        rand()%255,
+        rand()%255,
+        rand()%255
+    };
+
     Uint32 last_time, Now_time;
     last_time = SDL_GetTicks();
     while (state.is_running) {
+        switch (state.gamescreen) {
+            case MENU:
+                render_menu(renderer, &color_game_b, &color_exit_b);
+                break;
+            case GAME:
+                Now_time = SDL_GetTicks();
+                float dt = (Now_time - last_time) / 1000.0f ;
+                last_time = Now_time;
+
+                const Uint8* keys = SDL_GetKeyboardState(NULL);
+                game_handle_input(&state, keys, dt);
+                game_update(&state, dt);
+
+                render_game(&state, renderer, blocks_color);
+                break;
+            default:
+                fputs("Not a game and menu...", stderr);
+                break;
+        }
+
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 state.is_running = false;
                 break;
             }
-            if (event.type == SDL_MOUSEBUTTONDOWN)
+
+            if (event.type == SDL_MOUSEBUTTONDOWN) {
                 game_handle_click(&state, event.button.x, event.button.y);
+                break;
+            }
         }
 
         if (!state.is_running) break;
-
-        Now_time = SDL_GetTicks();
-        float dt = (Now_time - last_time) / 1000.0f ;
-        last_time = Now_time;
-
-        const Uint8* keys = SDL_GetKeyboardState(NULL);
-        game_handle_input(&state, keys, dt);
-        game_update(&state, dt);
-
-        render(&state, renderer, blocks_color);
 
         SDL_Delay(16);
     }

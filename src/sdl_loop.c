@@ -1,6 +1,8 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_pixels.h>
 #include <SDL2/SDL_render.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include "sdl_loop.h"
 #include "game.h"
 
@@ -35,8 +37,37 @@ void draw_circle(SDL_Renderer* renderer, int centerX, int centerY, int radius)
 }
 
 
-// Func render
-static inline void _render_impl(GameState* state, SDL_Renderer* renderer, const SDL_Color b_c[])
+// Func render menu
+static inline void _render_menu_impl(SDL_Renderer* renderer, const SDL_Color* cgb, const SDL_Color* ceb)
+{   // Black background
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+
+    SDL_Rect game_b = (SDL_Rect) {
+        GAME_BUTTON_X,
+        GAME_BUTTON_Y,
+        GAME_BUTTON_W,
+        GAME_BUTTON_H
+    };
+
+    SDL_Rect exit_b = (SDL_Rect) {
+        EXIT_BUTTON_X,
+        EXIT_BUTTON_Y,
+        EXIT_BUTTON_W,
+        EXIT_BUTTON_H
+    };
+
+    SDL_SetRenderDrawColor(renderer, ceb->r, ceb->g, ceb->b, ceb->a);
+    SDL_RenderFillRect(renderer, &exit_b);
+
+    SDL_SetRenderDrawColor(renderer, cgb->r, cgb->g, cgb->b, cgb->a);
+    SDL_RenderFillRect(renderer, &game_b);
+
+    SDL_RenderPresent(renderer);
+}
+
+// Func render game
+static inline void _render_game_impl(GameState* state, SDL_Renderer* renderer, const SDL_Color b_c[])
 {   // Black background
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
@@ -73,9 +104,15 @@ static inline void _render_impl(GameState* state, SDL_Renderer* renderer, const 
 }
 
 
-// Call func render
-void render(GameState *state, SDL_Renderer *renderer, const SDL_Color b_c[])
+// Call func render game
+void render_game(GameState *state, SDL_Renderer *renderer, const SDL_Color b_c[])
 {
-    _render_impl(state, renderer, b_c);
+    _render_game_impl(state, renderer, b_c);
 }
 
+
+// Call func render menu
+void render_menu(SDL_Renderer* renderer, const SDL_Color* cgb, const SDL_Color* ceb)
+{
+    _render_menu_impl(renderer, cgb, ceb);
+}

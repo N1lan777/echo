@@ -2,8 +2,21 @@
 
 // Window
 #define GAME_TITLE "echo"
-#define WIN_X 1600
-#define WIN_Y 900
+#define WIN_X 800
+#define WIN_Y 600
+
+// Menu
+    // GAME_BUTTON
+    #define GAME_BUTTON_X 350
+    #define GAME_BUTTON_Y 250
+    #define GAME_BUTTON_W 100
+    #define GAME_BUTTON_H 50
+
+    // EXIT_BUTTON
+    #define EXIT_BUTTON_X 10
+    #define EXIT_BUTTON_Y 550
+    #define EXIT_BUTTON_W 10
+    #define EXIT_BUTTON_H 30
 
 // Scores
 #define MAX_SCORES 10
