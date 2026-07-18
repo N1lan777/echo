@@ -3,7 +3,9 @@
 
 int main(int argc, char* argv[]) {
     GameState state;
+    Leaderboard board;
     game_init(&state);
+    game_loading(&board);
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window* win = SDL_CreateWindow("echo", 100, 100, 800, 600, SDL_WINDOW_SHOWN);
     Uint32 last_time = SDL_GetTicks();
@@ -30,6 +32,8 @@ int main(int argc, char* argv[]) {
         SDL_Delay(16);
 
     }
+    game_leaderboard(&board,"player",state.score);
+    game_save(&board);
     SDL_DestroyWindow(win);
     SDL_Quit();
     return 0;

@@ -1,5 +1,6 @@
 #include "game.h"
-#include "stdio.h"
+#include <stdio.h>
+#include <string.h>
  void game_init(GameState* state){ 
     state -> score = 0;
     state -> is_running = true;
@@ -119,4 +120,11 @@ void game_loading(Leaderboard* board){
    }
    board->count_scores = i;
    fclose(file);
+}
+void game_leaderboard(Leaderboard* board, const char * name, short score){
+   if (board->count_scores < MAX_SCORES){
+      strcpy(board->scores[board->count_scores].name,name);
+      board->scores[board->count_scores].score = score;
+      board->count_scores++;
+   }
 }
