@@ -128,3 +128,14 @@ void game_leaderboard(Leaderboard* board, const char * name, short score){
       board->count_scores++;
    }
 }
+void game_sort(Leaderboard* board){
+   for (int i = 0; i < board->count_scores - 1; ++i){
+      for (int j = 0; j < board->count_scores - 1 - i; ++j ){
+         if (board->scores[j].score > board->scores[j+1].score){
+            ScoreEntry temp = board->scores[j];
+            board->scores[j] = board->scores[j+1];
+            board->scores[j+1] = temp;
+         }
+      }
+   }
+}
