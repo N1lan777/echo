@@ -14,9 +14,15 @@
 
     // EXIT_BUTTON
     #define EXIT_BUTTON_X 10
-    #define EXIT_BUTTON_Y 550
-    #define EXIT_BUTTON_W 10
+    #define EXIT_BUTTON_Y 50
+    #define EXIT_BUTTON_W 30
     #define EXIT_BUTTON_H 30
+
+    // PAUSE_BUTTON
+    #define PAUSE_BUTTON_X 750
+    #define PAUSE_BUTTON_Y 10
+    #define PAUSE_BUTTON_W 30
+    #define PAUSE_BUTTON_H 30
 
 // Scores
 #define MAX_SCORES 10
@@ -28,9 +34,9 @@
 #define BLOCK_H 25
 
 // Ball
-#define BALL_VX 100
-#define BALL_VY 100
-#define BALL_R 30
+#define BALL_VX 200
+#define BALL_VY 200
+#define BALL_R 20
 
 // Paddle
 #define PADDLE_W 50

@@ -41,8 +41,10 @@ void game_update (GameState* state, float dt)
     if (state->ball.x + state->ball.r >= WIN_X || state->ball.x - state->ball.r <= 0)
         state->ball.vx = -(state->ball.vx);
 
-    if (state->ball.y - state->ball.r <= 0)
+    if (state->ball.y - state->ball.r <= 0) {
         state->ball.vy = -(state->ball.vy);
+        state->ball.y = state->ball.r;
+    }
 
     if (state->ball.y + state->ball.r >= WIN_Y)
         state->is_running = false;
@@ -51,19 +53,11 @@ void game_update (GameState* state, float dt)
     float paddle_bottom = state->paddle.height + state->paddle.y;
 
     if (
-        state->ball.x >= state->paddle.x &&
-        state->ball.x <= paddle_right &&
-        state->ball.y >= state->paddle.y &&
-        state->ball.y <= paddle_bottom
-    )
-        state->ball.vy = -(state->ball.vy);
-
-    if (
         state->ball.x + state->ball.r >= state->paddle.x &&
         state->ball.x - state->ball.r <= paddle_right &&
         state->ball.y + state->ball.r >= state->paddle.y &&
-        state->ball.y - state->ball.r <= paddle_bottom &&
-        state->ball.vy > 0
+        state->ball.y - state->ball.r <= paddle_bottom /*&&
+        state->ball.vy > 0*/
     )
         state->ball.vy = -(state->ball.vy);
 
@@ -91,7 +85,7 @@ void game_update (GameState* state, float dt)
             block_alive++;
 
     if (block_alive == 0)
-      state->won = true;
+        state->won = true;
 }
 
 void game_handle_input(GameState* state, const Uint8* keys, float dt)
@@ -112,17 +106,14 @@ void game_handle_click(GameState* state, int mouse_x, int mouse_y)
             mouse_y <= GAME_BUTTON_Y + GAME_BUTTON_H
         )
             state->gamescreen = GAME;
-
-        if (
-            mouse_x >= EXIT_BUTTON_X &&
-            mouse_x <= EXIT_BUTTON_X + EXIT_BUTTON_W &&
-            mouse_y >= EXIT_BUTTON_Y &&
-            mouse_y <= EXIT_BUTTON_Y + EXIT_BUTTON_H
-        )
-            state->is_running = false;
     }
 
-    if (mouse_x >= 10 && mouse_x <= 40 && mouse_y >= 550 && mouse_y <= 580) {
+    if (
+        mouse_x >= PAUSE_BUTTON_X &&
+        mouse_x <= PAUSE_BUTTON_X + PAUSE_BUTTON_W &&
+        mouse_y >= PAUSE_BUTTON_Y &&
+        mouse_y <= PAUSE_BUTTON_Y + PAUSE_BUTTON_H
+    ) {
         if (state->gamescreen == GAME)
             state->gamescreen = PAUSE;
         else if (state->gamescreen == PAUSE)
@@ -134,8 +125,7 @@ void game_save(Leaderboard* board)
     FILE* file = fopen(SCORES_FILE,"w");
     if (file == NULL)
         return;
-
-    for (int i = 0 ; i < board->count_scores; ++i)
+    for (int i = 0; i < board->count_scores; ++i)
         fprintf(file,"%s,%hd ",board->scores[i].name, board->scores[i].score);
     fclose(file);
 }

@@ -4,7 +4,7 @@
 #include "sdl_loop.h"
 #include <stdlib.h>
 #include <time.h>
-
+#include <assert.h>
 
 int main(void) {
     GameState state;
@@ -40,26 +40,13 @@ int main(void) {
         blocks_color[i].a = rand()%255;
     }
 
-    SDL_Color color_game_b = (SDL_Color) {
-        rand()%255,
-        rand()%255,
-        rand()%255,
-        rand()%255
-    };
-
-    SDL_Color color_exit_b = (SDL_Color) {
-        rand()%255,
-        rand()%255,
-        rand()%255,
-        rand()%255
-    };
 
     Uint32 last_time, Now_time;
-    last_time = SDL_GetTicks();
     while (state.is_running) {
         switch (state.gamescreen) {
             case MENU:
-                render_menu(renderer, &color_game_b, &color_exit_b);
+    		last_time = SDL_GetTicks();
+                render_menu(renderer);
                 break;
             case GAME:
                 Now_time = SDL_GetTicks();
@@ -72,8 +59,11 @@ int main(void) {
 
                 render_game(&state, renderer, blocks_color);
                 break;
+            case PAUSE:
+    		last_time = SDL_GetTicks();
+                break;
             default:
-                fputs("Not a game and menu...", stderr);
+                fputs("Catched undefined behavior\n", stderr);
                 break;
         }
 
@@ -84,10 +74,8 @@ int main(void) {
                 break;
             }
 
-            if (event.type == SDL_MOUSEBUTTONDOWN) {
+            if (event.type == SDL_MOUSEBUTTONDOWN)
                 game_handle_click(&state, event.button.x, event.button.y);
-                break;
-            }
         }
 
         if (!state.is_running) break;
@@ -95,6 +83,7 @@ int main(void) {
         SDL_Delay(16);
     }
 
+    SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
     return 0;
