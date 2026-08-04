@@ -4,7 +4,7 @@
  void game_init(GameState* state){ 
     state -> score = 0;
     state -> is_running = true;
-    state -> gamescreen = MENU; 
+    state -> gamescreen = NAME_INPUT; 
 
     state -> ball.x = 400;
     state -> ball.y = 300;
@@ -32,23 +32,23 @@ void game_update (GameState * state, float dt){
    if (state->gamescreen != GAME) {
         return;
     }
-   state -> ball.x = state -> ball.x + state -> ball.vx * dt;
-   state -> ball.y = state -> ball.y + state -> ball.vy * dt;
+   state->ball.x += state->ball.vx * dt;
+   state->ball.y += state->ball.vy * dt;
 
-   if (state->ball.x + state -> ball.r >= 800 || state->ball.x - state -> ball.r <= 0 ) {
+   if (state->ball.x + state->ball.r >= 800 || state->ball.x - state->ball.r <= 0 ) {
       state->ball.vx = -(state->ball.vx);
    }
-   if (state->ball.y - state -> ball.r <= 0) {
+   if (state->ball.y - state->ball.r <= 0) {
       state->ball.vy = -(state->ball.vy);
    }
-   if (state->ball.y + state -> ball.r >= 600){
+   if (state->ball.y + state->ball.r >= 600){
       state->is_running = false;
    }
 
    float paddle_right = state->paddle.width + state->paddle.x;
    float paddle_bottom = state->paddle.height + state->paddle.y;  
    
-   if (state->ball.x + state -> ball.r >=state->paddle.x && state->ball.x - state -> ball.r <=paddle_right && state->ball.y + state -> ball.r >=state->paddle.y && state->ball.y - state -> ball.r <=paddle_bottom && state->ball.vy > 0){
+   if (state->ball.x + state -> ball.r >=state->paddle.x && state->ball.x - state -> ball.r <=paddle_right && state->ball.y + state -> ball.r >=state->paddle.y && state->ball.y - state -> ball.r <=paddle_bottom ){
       state->ball.vy = -(state->ball.vy);
    }
    for (int i = 0; i < MAX_BLOCKS; ++i){  
@@ -74,27 +74,27 @@ void game_update (GameState * state, float dt){
 }
 void game_handle_input(GameState* state, const Uint8* keys, float dt){
    if (keys[SDL_SCANCODE_LEFT]){
-      state -> paddle.x -= 300 * dt;
+      state->paddle.x -= 300 * dt;
    }
    if (keys[SDL_SCANCODE_RIGHT]){
-      state -> paddle.x += 300 * dt;
+      state->paddle.x += 300 * dt;
    }
 }
 void game_handle_click(GameState* state, int mouse_x, int mouse_y) {
    if (state->gamescreen == MENU) {
       if (mouse_x >= 350 && mouse_x <= 450 && mouse_y >= 250 && mouse_y <= 300){
-         state -> gamescreen = GAME;
+         state->gamescreen = GAME;
       }
       if (mouse_x >= 350 && mouse_x <= 450 && mouse_y >= 190 && mouse_y <=240){
-         state -> is_running = false;
+         state->is_running = false;
       }
    }
    if (mouse_x >=10 && mouse_x <=40 && mouse_y >=550 && mouse_y <=580 ){
-      if (state -> gamescreen == GAME){
-         state -> gamescreen = PAUSE;
+      if (state->gamescreen == GAME){
+         state->gamescreen = PAUSE;
       }
-      else if (state -> gamescreen == PAUSE ){
-         state -> gamescreen = GAME;
+      else if (state->gamescreen == PAUSE ){
+         state->gamescreen = GAME;
       }
    }
 }
@@ -111,18 +111,18 @@ void game_save (Leaderboard* board){
 void game_loading(Leaderboard* board){
    FILE* file = fopen(SCORES_FILE,"r");
    if (file == NULL){
-      board -> count_scores = 0;
+      board->count_scores = 0;
       return;
    }
    int i;
    for (i = 0; i < MAX_SCORES &&
-      fscanf(file,"%s,%hd ", board -> scores[i].name, &(board -> scores[i].score)) == 2; ++i){
+      fscanf(file,"%s,%hd ", board->scores[i].name, &(board->scores[i].score)) == 2; ++i){
    }
    board->count_scores = i;
    fclose(file);
 }
 void game_leaderboard(Leaderboard* board, const char * name, short score){
-   if (board->count_scores < MAX_SCORES){
+   if (board->count_scores < MAX_SCORES){ 
       strcpy(board->scores[board->count_scores].name,name);
       board->scores[board->count_scores].score = score;
       board->count_scores++;
@@ -138,4 +138,10 @@ void game_sort(Leaderboard* board){
          }
       }
    }
+}
+void game_text_handle_input(GameState* state, const char* text){
+   if (state->gamescreen != NAME_INPUT){
+      return;
+   }
+   strcat(state->player_name,text);
 }

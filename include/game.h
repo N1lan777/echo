@@ -5,7 +5,6 @@
 #define MAX_SCORES 10
 #define SCORES_FILE "scorex.txt"
 
-
 typedef enum {
     MENU,
     GAME,
@@ -13,7 +12,7 @@ typedef enum {
     HELP,
     PLAYERS,
     RECORD,
-    EXIT,
+    NAME_INPUT,
 } GameScreen;
 
 typedef struct {
@@ -36,21 +35,23 @@ typedef struct {
     float y;
     float width;
     float height;
-    short hp;
+    bool hp;
+    SDL_Color color;
 } Block;
 typedef struct {
-    char name[20];
     short score;
+    char name[32];
 } ScoreEntry;
 
 typedef struct {
     Ball ball;
     Paddle paddle;
-    bool is_running;
-    short score;
     Block blocks[MAX_BLOCKS];
-    bool won;
     GameScreen gamescreen;
+    short score;
+    bool is_running;
+    bool won;
+    char player_name[32];
 } GameState;
 
 typedef struct {
@@ -66,3 +67,5 @@ void game_loading(Leaderboard* board);
 void game_save(Leaderboard* board);
 void game_leaderboard(Leaderboard* board, const char * name, short score);
 void game_sort(Leaderboard* board); 
+bool game_load_player_name(char* name_out);
+void game_text_handle_input(GameState* state, const char* text);

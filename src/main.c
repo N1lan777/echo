@@ -8,6 +8,7 @@ int main(int argc, char* argv[]) {
     game_loading(&board);
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window* win = SDL_CreateWindow("echo", 100, 100, 800, 600, SDL_WINDOW_SHOWN);
+    SDL_StartTextInput();
     Uint32 last_time = SDL_GetTicks();
     while (state.is_running) {
         SDL_Event event;
@@ -18,6 +19,9 @@ int main(int argc, char* argv[]) {
             if (event.type == SDL_MOUSEBUTTONDOWN){
                 game_handle_click(&state, event.button.x, event.button.y);
             }
+            if (event.type == SDL_TEXTINPUT){
+                game_text_handle_input(&state, event.text.text);
+            }
         }
         Uint32 Now_time = SDL_GetTicks();
         float dt    = (Now_time - last_time)/ 1000.0f ;
@@ -25,17 +29,16 @@ int main(int argc, char* argv[]) {
 
         const Uint8* keys = SDL_GetKeyboardState(NULL);
         game_handle_input(&state, keys, dt);
-        game_update(&state, dt);
-
-        // TODO: render(&state, renderer); — Alegen добавляет здесь свой вызов рендера
-        
+        game_update(&state, dt);        
         SDL_Delay(16);
 
     }
+
     game_leaderboard(&board,"player",state.score);
     game_sort(&board);
     game_save(&board);
+
     SDL_DestroyWindow(win);
-    SDL_Quit();
+    SDL_Quit(); 
     return 0;
 }
