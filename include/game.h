@@ -50,7 +50,6 @@ typedef struct {
     GameScreen gamescreen;
     short score;
     bool is_running;
-    bool won;
     char player_name[32];
 } GameState;
 
@@ -59,7 +58,7 @@ typedef struct {
     int count_scores;
 }Leaderboard;
 
-void game_init(GameState* state);
+void game_init(GameState* state, bool is_start);
 void game_update(GameState* state, float dt);
 void game_handle_input(GameState* state, const Uint8* keys, float dt);
 void game_handle_click(GameState* state, int mouse_x, int mouse_y);

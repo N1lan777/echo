@@ -1,31 +1,33 @@
 #include "game.h"
 #include <stdio.h>
 #include <string.h>
- void game_init(GameState* state){ 
-    state -> score = 0;
-    state -> is_running = true;
-    state -> gamescreen = NAME_INPUT; 
+#include <stdlib.h>
+ void game_init(GameState* state, bool is_start){
+   if (is_start){
+      state -> score = 0;
+      state -> is_running = true;
+      state -> gamescreen = NAME_INPUT; 
+   }
+   state -> ball.x = 400;
+   state -> ball.y = 300;
+   state -> ball.vx = 50;
+   state -> ball.vy = 50;
+   state -> ball.r = 10;
 
-    state -> ball.x = 400;
-    state -> ball.y = 300;
-    state -> ball.vx = 50;
-    state -> ball.vy = 50;
-    state -> ball.r = 10;
+   state -> paddle.x = 375;
+   state -> paddle.y = 550;
+   state -> paddle.width = 50;
+   state -> paddle.height = 25;
 
-    state -> paddle.x = 375;
-    state -> paddle.y = 550;
-    state -> paddle.width = 50;
-    state -> paddle.height = 25;
-
-    for (int i = 0; i < MAX_BLOCKS; ++i){
+   for (int i = 0; i < MAX_BLOCKS; ++i){
       int col = i % 10;
       int row = i / 10;
       state -> blocks[i].x = 10 + col * 75;
       state -> blocks[i].y = 50 + row * (25 + 10) ;
       state -> blocks[i].width = 75;
       state -> blocks[i].height = 25;
-      state -> blocks[i].hp = 1;
-    }
+      state -> blocks[i].hp = rand() % 2;
+   }
  }
 
 void game_update (GameState * state, float dt){
@@ -59,6 +61,7 @@ void game_update (GameState * state, float dt){
          if (state->ball.x + state->ball.r >=state->blocks[i].x && state->ball.x - state->ball.r <=block_right && state->ball.y + state->ball.r >=state->blocks[i].y && state->ball.y - state->ball.r <=block_bottom && state->ball.vy > 0){
             state->ball.vy = -(state->ball.vy);
             state->blocks[i].hp--;
+            state->score++;
          }
       }
    }
@@ -69,7 +72,7 @@ void game_update (GameState * state, float dt){
       }
    }
    if (block_alive == 0){
-      state->won = true;
+      game_init(state, false);
    }
 }
 void game_handle_input(GameState* state, const Uint8* keys, float dt){
@@ -143,5 +146,5 @@ void game_text_handle_input(GameState* state, const char* text){
    if (state->gamescreen != NAME_INPUT){
       return;
    }
-   strcat(state->player_name,text);
+   strcpy(state->player_name,text);
 }

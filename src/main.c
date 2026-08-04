@@ -4,7 +4,7 @@
 int main(int argc, char* argv[]) {
     GameState state;
     Leaderboard board;
-    game_init(&state);
+    game_init(&state,true);
     game_loading(&board);
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window* win = SDL_CreateWindow("echo", 100, 100, 800, 600, SDL_WINDOW_SHOWN);
