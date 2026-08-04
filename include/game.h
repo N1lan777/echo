@@ -9,7 +9,6 @@ typedef enum {
     MENU,
     GAME,
     PAUSE,
-    HELP,
     PLAYERS,
     RECORD,
     NAME_INPUT,
@@ -66,5 +65,4 @@ void game_loading(Leaderboard* board);
 void game_save(Leaderboard* board);
 void game_leaderboard(Leaderboard* board, const char * name, short score);
 void game_sort(Leaderboard* board); 
-bool game_load_player_name(char* name_out);
 void game_text_handle_input(GameState* state, const char* text);

@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
             if (event.type == SDL_TEXTINPUT){
                 game_text_handle_input(&state, event.text.text);
             }
-        }
+        }//https://www.youtube.com/watch?v=66xQ67ckWNQ
         Uint32 Now_time = SDL_GetTicks();
         float dt    = (Now_time - last_time)/ 1000.0f ;
         last_time = Now_time;

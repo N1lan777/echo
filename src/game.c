@@ -88,8 +88,11 @@ void game_handle_click(GameState* state, int mouse_x, int mouse_y) {
       if (mouse_x >= 350 && mouse_x <= 450 && mouse_y >= 250 && mouse_y <= 300){
          state->gamescreen = GAME;
       }
-      if (mouse_x >= 350 && mouse_x <= 450 && mouse_y >= 190 && mouse_y <=240){
+      if (mouse_x >= 350 && mouse_x <= 450 && mouse_y >= 300 && mouse_y <=350){
          state->is_running = false;
+      }
+      if (mouse_x >= 350 && mouse_x <= 450 && mouse_y >= 350 && mouse_y <= 400){
+      state->gamescreen = RECORD;
       }
    }
    if (mouse_x >=10 && mouse_x <=40 && mouse_y >=550 && mouse_y <=580 ){
@@ -146,5 +149,5 @@ void game_text_handle_input(GameState* state, const char* text){
    if (state->gamescreen != NAME_INPUT){
       return;
    }
-   strcpy(state->player_name,text);
+   strcat(state->player_name,text);
 }
