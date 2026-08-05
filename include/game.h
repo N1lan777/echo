@@ -37,6 +37,7 @@ typedef struct {
     bool hp;
     SDL_Color color;
 } Block;
+// player data
 typedef struct {
     short score;
     char name[32];
@@ -51,7 +52,7 @@ typedef struct {
     bool is_running;
     char player_name[32];
 } GameState;
-
+// board player 
 typedef struct {
     ScoreEntry scores[MAX_SCORES];
     int count_scores;
