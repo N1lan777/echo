@@ -1,6 +1,7 @@
 #pragma once
 #include <stdbool.h>
 #include <SDL.h>
+#include <stdint.h>
 #define MAX_BLOCKS 50
 #define MAX_SCORES 10
 #define SCORES_FILE "scorex.txt"
@@ -9,7 +10,6 @@ typedef enum {
     MENU,
     GAME,
     PAUSE,
-    PLAYERS,
     RECORD,
     NAME_INPUT,
 } GameScreen;

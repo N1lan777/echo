@@ -103,6 +103,9 @@ void game_handle_click(GameState* state, int mouse_x, int mouse_y) {
          state->gamescreen = GAME;
       }
    }
+   if (state->gamescreem == RECORD && mouse_x >=10 && mouse_x <=40 && mouse_y >=550 && mouse_y <=580 ){
+      state->gamescreen == MENU
+   }
 }
 void game_save (Leaderboard* board){
    FILE* file =  fopen(SCORES_FILE,"w");
