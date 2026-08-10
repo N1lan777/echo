@@ -50,7 +50,7 @@ void game_update (GameState * state, float dt){
    float paddle_right = state->paddle.width + state->paddle.x;
    float paddle_bottom = state->paddle.height + state->paddle.y;  
    
-   if (state->ball.x + state -> ball.r >=state->paddle.x && state->ball.x - state -> ball.r <=paddle_right && state->ball.y + state -> ball.r >=state->paddle.y && state->ball.y - state -> ball.r <=paddle_bottom ){
+   if (state->ball.x + state->ball.r >=state->paddle.x && state->ball.x - state->ball.r <=paddle_right && state->ball.y + state->ball.r >=state->paddle.y && state->ball.y - state->ball.r <=paddle_bottom ){
       state->ball.vy = -(state->ball.vy);
    }
    for (int i = 0; i < MAX_BLOCKS; ++i){  
