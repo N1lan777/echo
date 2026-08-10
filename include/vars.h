@@ -24,6 +24,18 @@
     #define PAUSE_BUTTON_W 30
     #define PAUSE_BUTTON_H 30
 
+    // RECORD_BUTTON
+    #define RECORD_BUTTON_X 350
+    #define RECORD_BUTTON_Y 450
+    #define RECORD_BUTTON_W 100
+    #define RECORD_BUTTON_H 50
+
+    // BACK BUTTON
+    #define BACK_BUTTON_X 10
+    #define BACK_BUTTON_Y 550
+    #define BACK_BUTTON_W 30
+    #define BACK_BUTTON_H 30
+
 // Scores
 #define MAX_SCORES 10
 #define SCORES_FILE "scorex.txt"
@@ -39,6 +51,6 @@
 #define BALL_R 20
 
 // Paddle
-#define PADDLE_W 50
-#define PADDLE_H 25
+#define PADDLE_W 80
+#define PADDLE_H 20
 #define PADDLE_VX 300

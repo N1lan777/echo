@@ -1,4 +1,4 @@
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <stdio.h>
 #include "game.h"
 #include "sdl_loop.h"
@@ -64,6 +64,10 @@ int main(void) {
                 break;
             case PAUSE:
     		    last_time = SDL_GetTicks();
+                break;
+            case RECORD:
+                last_time = SDL_GetTicks();
+                render_record(renderer);
                 break;
             default:
                 fputs("Catched undefined behavior\n", stderr);

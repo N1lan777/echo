@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_render.h>
 #include <stdbool.h>
 #include "sdl_loop.h"
 #include "game.h"
@@ -42,13 +43,59 @@ static inline void _render_pause_b_impl(SDL_Renderer* renderer)
         PAUSE_BUTTON_W,
         PAUSE_BUTTON_H
     };
-
+    // color pause button
     SDL_Color cpb = {
         255, 0, 0, 255
     };
 
     SDL_SetRenderDrawColor(renderer, cpb.r, cpb.g, cpb.b, cpb.a);
     SDL_RenderFillRect(renderer, &pause_b);
+}
+
+// Func render back
+static inline void _render_back_b_impl(SDL_Renderer* renderer)
+{
+    SDL_Rect back_b = {
+        BACK_BUTTON_X,
+        BACK_BUTTON_Y,
+        BACK_BUTTON_W,
+        BACK_BUTTON_H
+    };
+    // color back button
+    SDL_Color cbb = {
+        0, 0, 100, 255
+    };
+
+    SDL_SetRenderDrawColor(renderer, cbb.r, cbb.g, cbb.b, cbb.a);
+    SDL_RenderFillRect(renderer, &back_b);
+}
+
+
+// Func render record button
+static inline void _render_record_b_impl(SDL_Renderer* renderer)
+{
+    SDL_Rect record_b = {
+        RECORD_BUTTON_X,
+        RECORD_BUTTON_Y,
+        RECORD_BUTTON_W,
+        RECORD_BUTTON_H
+    };
+    // color record button
+    SDL_Color crb = {
+        100, 100, 100, 255
+    };
+
+    SDL_SetRenderDrawColor(renderer, crb.r, crb.g, crb.b, crb.a);
+    SDL_RenderFillRect(renderer, &record_b);
+}
+
+static inline void _render_record_impl(SDL_Renderer* renderer)
+{   // Black background
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+
+    _render_back_b_impl(renderer);
+    SDL_RenderPresent(renderer);
 }
 
 // Func render menu
@@ -63,12 +110,13 @@ static inline void _render_menu_impl(SDL_Renderer* renderer)
         GAME_BUTTON_W,
         GAME_BUTTON_H
     };
-
+    // color game button
     SDL_Color cgb = {
         0, 0, 255, 255
     };
 
     _render_pause_b_impl(renderer);
+    _render_record_b_impl(renderer);
 
     SDL_SetRenderDrawColor(renderer, cgb.r, cgb.g, cgb.b, cgb.a);
     SDL_RenderFillRect(renderer, &game_b);
@@ -117,6 +165,11 @@ static inline void _render_game_impl(GameState* state, SDL_Renderer* renderer, c
     SDL_RenderPresent(renderer);
 }
 
+
+void render_record(SDL_Renderer* renderer)
+{
+    _render_record_impl(renderer);
+}
 
 // Call func render game
 void render_game(GameState *state, SDL_Renderer *renderer, const SDL_Color b_c[])

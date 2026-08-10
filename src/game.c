@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <math.h>
+
 
 void game_init(GameState* state, bool is_start)
 {
@@ -46,51 +48,131 @@ void game_update (GameState* state, float dt)
     state->ball.x += state->ball.vx * dt;
     state->ball.y += state->ball.vy * dt;
 
-    if (state->ball.x + state->ball.r >= WIN_X || state->ball.x - state->ball.r <= 0)
-        state->ball.vx = -(state->ball.vx);
+    /* Walls */
 
-    if (state->ball.y - state->ball.r <= 0) {
-        state->ball.vy = -(state->ball.vy);
-        state->ball.y = state->ball.r;
+    if (state->ball.x + state->ball.r >= WIN_X) {
+        state->ball.x = WIN_X - state->ball.r;
+        state->ball.vx = -fabsf(state->ball.vx);
     }
 
-    if (state->ball.y + state->ball.r >= WIN_Y)
-        state->is_running = false;
+    if (state->ball.x - state->ball.r <= 0) {
+        state->ball.x = state->ball.r;
+        state->ball.vx = fabsf(state->ball.vx);
+    }
 
-    float paddle_right = state->paddle.width + state->paddle.x;
-    float paddle_bottom = state->paddle.height + state->paddle.y;
+    if (state->ball.y - state->ball.r <= 0) {
+        state->ball.y = state->ball.r;
+        state->ball.vy = fabsf(state->ball.vy);
+    }
+
+    if (state->ball.y + state->ball.r >= WIN_Y) {
+        state->is_running = false;
+        return;
+    }
+
+
+    /* Paddle */
+
+    float paddle_left   = state->paddle.x;
+    float paddle_right  = state->paddle.x + state->paddle.width;
+    float paddle_top    = state->paddle.y;
+    float paddle_bottom = state->paddle.y + state->paddle.height;
+
+    float ball_left   = state->ball.x - state->ball.r;
+    float ball_right  = state->ball.x + state->ball.r;
+    float ball_top    = state->ball.y - state->ball.r;
+    float ball_bottom = state->ball.y + state->ball.r;
 
     if (
-        state->ball.x + state->ball.r >= state->paddle.x &&
-        state->ball.x - state->ball.r <= paddle_right &&
-        state->ball.y + state->ball.r >= state->paddle.y &&
-        state->ball.y - state->ball.r <= paddle_bottom
-    )
-        state->ball.vy = -(state->ball.vy);
+        ball_right >= paddle_left &&
+        ball_left <= paddle_right &&
+        ball_bottom >= paddle_top &&
+        ball_top <= paddle_bottom &&
+        state->ball.vy > 0
+    ) {
+        state->ball.y = paddle_top - state->ball.r;
+        state->ball.vy = -fabsf(state->ball.vy);
+    }
 
-    for (int i = 0; i < MAX_BLOCKS; ++i){
-        if (state->blocks[i].hp > 0){
-            float block_right = state->blocks[i].x + state->blocks[i].width;
-            float block_bottom = state->blocks[i].y + state->blocks[i].height;
+    if (paddle_right > WIN_X)
+        state->paddle.x = WIN_X - state->paddle.width;
 
-            if (
-                state->ball.x + state->ball.r >= state->blocks[i].x &&
-                state->ball.x - state->ball.r <= block_right &&
-                state->ball.y + state->ball.r >= state->blocks[i].y &&
-                state->ball.y - state->ball.r <= block_bottom /* &&
-                state->ball.vy > 0 */
-            ) {
-                state->ball.vy = -(state->ball.vy);
-                state->blocks[i].hp--;
-                state->score++;
+    if (paddle_left < 0) 
+        state->paddle.x = 0;
+
+    /* Blocks */
+
+    for (int i = 0; i < MAX_BLOCKS; ++i) {
+
+        if (state->blocks[i].hp <= 0)
+            continue;
+
+        float block_left   = state->blocks[i].x;
+        float block_right  = state->blocks[i].x + state->blocks[i].width;
+        float block_top    = state->blocks[i].y;
+        float block_bottom = state->blocks[i].y + state->blocks[i].height;
+
+        ball_left   = state->ball.x - state->ball.r;
+        ball_right  = state->ball.x + state->ball.r;
+        ball_top    = state->ball.y - state->ball.r;
+        ball_bottom = state->ball.y + state->ball.r;
+
+        if (
+            ball_right >= block_left &&
+            ball_left <= block_right &&
+            ball_bottom >= block_top &&
+            ball_top <= block_bottom
+        ) {
+            float overlap_x =
+                fminf(ball_right, block_right) -
+                fmaxf(ball_left, block_left);
+
+            float overlap_y =
+                fminf(ball_bottom, block_bottom) -
+                fmaxf(ball_top, block_top);
+
+            if (overlap_x < overlap_y) {
+
+                /* Collision from left/right */
+
+                if (state->ball.x < block_left) {
+                    state->ball.x = block_left - state->ball.r;
+                    state->ball.vx = -fabsf(state->ball.vx);
+                } else {
+                    state->ball.x = block_right + state->ball.r;
+                    state->ball.vx = fabsf(state->ball.vx);
+                }
+
+            } else {
+
+                /* Collision from top/bottom */
+
+                if (state->ball.y < block_top) {
+                    state->ball.y = block_top - state->ball.r;
+                    state->ball.vy = -fabsf(state->ball.vy);
+                } else {
+                    state->ball.y = block_bottom + state->ball.r;
+                    state->ball.vy = fabsf(state->ball.vy);
+                }
             }
+
+            state->blocks[i].hp--;
+            state->score++;
+
+            /* One block per frame */
+            break;
         }
     }
 
+
+    /* Check whether blocks remain */
+
     int block_alive = 0;
-    for (int i = 0; i < MAX_BLOCKS; ++i)
+
+    for (int i = 0; i < MAX_BLOCKS; ++i) {
         if (state->blocks[i].hp > 0)
             block_alive++;
+    }
 
     if (block_alive == 0)
         game_init(state, false);
@@ -116,6 +198,13 @@ void game_handle_click(GameState* state, int mouse_x, int mouse_y)
             mouse_y <= GAME_BUTTON_Y + GAME_BUTTON_H
         )
             state->gamescreen = GAME;
+        if (
+            mouse_x >= RECORD_BUTTON_X &&
+            mouse_x <= RECORD_BUTTON_X + RECORD_BUTTON_W &&
+            mouse_y >= RECORD_BUTTON_Y &&
+            mouse_y <= RECORD_BUTTON_Y + RECORD_BUTTON_H
+        )
+            state->gamescreen = RECORD;
     }
 
     if (
@@ -130,14 +219,14 @@ void game_handle_click(GameState* state, int mouse_x, int mouse_y)
             state->gamescreen = GAME;
     }
 
-    //if (mouse_x >= 350 && mouse_x <= 450 && mouse_y >= 350 && mouse_y <= 400){
-    //    state->gamescreen = RECORD;
-    //}
-    // TODO :
-    //if (state->gamescreem == RECORD && mouse_x >=10 && mouse_x <=40 && mouse_y >=550 && mouse_y <=580 ){
-    //    state->gamescreen == MENU
-    //}
-    // TODO :
+    if (
+        state->gamescreen == RECORD &&
+        mouse_x >= BACK_BUTTON_X &&
+        mouse_x <= BACK_BUTTON_X + BACK_BUTTON_W &&
+        mouse_y >= BACK_BUTTON_Y &&
+        mouse_y <= BACK_BUTTON_Y + BACK_BUTTON_H
+    )
+        state->gamescreen = MENU;
 }
 
 
