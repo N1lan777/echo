@@ -1,10 +1,8 @@
 #pragma once
+
 #include <stdbool.h>
 #include <SDL.h>
-#include <stdint.h>
-#define MAX_BLOCKS 50
-#define MAX_SCORES 10
-#define SCORES_FILE "scorex.txt"
+#include "vars.h"
 
 typedef enum {
     MENU,
@@ -56,14 +54,14 @@ typedef struct {
 typedef struct {
     ScoreEntry scores[MAX_SCORES];
     int count_scores;
-}Leaderboard;
+} Leaderboard;
 
-void game_init(GameState* state, bool is_start);
-void game_update(GameState* state, float dt);
+void game_init (GameState* state, bool is_start);
+void game_update (GameState* state, float dt);
 void game_handle_input(GameState* state, const Uint8* keys, float dt);
 void game_handle_click(GameState* state, int mouse_x, int mouse_y);
 void game_loading(Leaderboard* board);
 void game_save(Leaderboard* board);
-void game_leaderboard(Leaderboard* board, const char * name, short score);
+void game_leaderboard(Leaderboard* board, const char* name, short score);
 void game_sort(Leaderboard* board); 
 void game_text_handle_input(GameState* state, const char* text);
