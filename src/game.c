@@ -266,21 +266,31 @@ void game_loading(Leaderboard* board)
 void game_leaderboard(Leaderboard* board, const char * name, int score)
 {
     if (board->count_scores < MAX_SCORES) {
+<<<<<<< HEAD
         for (int i = 0; i< board->count_scores; ++i) {
             if (strcmp(board->scores[i].name,name) == 0) {
                 if (board->scores[i].score < score) {
+=======
+        for (int i = 0; i< board->count_scores; ++i){
+            if ( strcmp(board->scores[i].name,name) == 0) { 
+                if (board->scores[i].score > score){
+>>>>>>> 23ecd5778af1cd39919650fbae7ec3d650cbd3fd
                     board->scores[i].score = score;
                     continue;
                 }
                 else continue;
             }
 
+<<<<<<< HEAD
             strcpy(board->scores[board->count_scores].name,name);
             board->scores[board->count_scores++].score = score;
+=======
+        strcpy(board->scores[board->count_scores].name,name);
+        board->scores[board->count_scores++].score = score;
+>>>>>>> 23ecd5778af1cd39919650fbae7ec3d650cbd3fd
         }
     }
 }
-
 
 void game_sort(Leaderboard* board)
 {
