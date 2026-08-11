@@ -1,11 +1,11 @@
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <stdio.h>
 #include "game.h"
 #include "sdl_loop.h"
 #include <stdlib.h>
 #include <time.h>
 
-int main(void) {
+int main(int argc, char** argv) {
     GameState state;
     Leaderboard board;
     game_init(&state,true);

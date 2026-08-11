@@ -1,10 +1,18 @@
 cmake_minimum_required(VERSION 3.20)
 project(echo C)
 
-find_package(SDL2 CONFIG REQUIRED)
+include(FetchContent)
+FetchContent_Declare(
+    SDL2
+    GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+    GIT_TAG release-2.30.x # Скачиваем стабильную ветку 2.x
+)
+set(FORCE_STATIC_VCRT ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(SDL2)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 add_executable(echo src/main.c src/sdl_loop.c src/game.c)
 
@@ -17,4 +25,4 @@ target_compile_options(echo PRIVATE
 
 
 target_include_directories(echo PRIVATE include)
-target_link_libraries(echo PRIVATE SDL2::SDL2 SDL2::SDL2main)
+target_link_libraries(echo PRIVATE SDL2main SDL2-static)
