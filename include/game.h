@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdbool.h>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include "vars.h"
 
 typedef enum {
@@ -48,7 +48,7 @@ typedef struct {
     GameScreen gamescreen;
     short score;
     bool is_running;
-    char player_name[32];
+    char player_name[MAX_TEXT_LEN];
 } GameState;
 // board player 
 typedef struct {

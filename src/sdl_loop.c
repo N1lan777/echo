@@ -1,5 +1,5 @@
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_render.h>
+#include <SDL_ttf.h>
 #include <stdbool.h>
 #include "sdl_loop.h"
 #include "game.h"
@@ -165,9 +165,53 @@ static inline void _render_game_impl(GameState* state, SDL_Renderer* renderer, c
 }
 
 
-static inline void _render_name_input_impl(SDL_Renderer* renderer, char* name)
+static inline void _render_name_input_impl(SDL_Renderer* renderer, TTF_Font *font, const char *player_name)
 {
-    ;
+    SDL_Color color = {255, 255, 255, 255};
+
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+
+    SDL_Surface *surface = NULL;
+    SDL_Texture *texture = NULL;
+
+    if (player_name[0] != '\0') {
+
+        surface = TTF_RenderUTF8_Blended(
+            font,
+            player_name,
+            color
+        );
+
+        if (surface) {
+            texture = SDL_CreateTextureFromSurface(
+                renderer,
+                surface
+            );
+
+            if (texture) {
+                SDL_Rect dst = {
+                    50,
+                    150,
+                    surface->w,
+                    surface->h
+                };
+
+                SDL_RenderCopy(
+                    renderer,
+                    texture,
+                    NULL,
+                    &dst
+                );
+
+                SDL_DestroyTexture(texture);
+            }
+
+            SDL_FreeSurface(surface);
+        }
+    }
+
+    SDL_RenderPresent(renderer);
 }
 
 
@@ -189,7 +233,7 @@ void render_menu(SDL_Renderer* renderer)
 }
 
 
-void render_name_input(SDL_Renderer* renderer, char* name)
+void render_name_input(SDL_Renderer* renderer, TTF_Font *font, const char *player_name)
 {
-    _render_name_input_impl(renderer, name);
+    _render_name_input_impl(renderer, font, player_name);
 }

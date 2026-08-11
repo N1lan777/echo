@@ -1,7 +1,9 @@
-#include <SDL.h>
+#include <SDL2/SDL.h>
+#include <SDL_ttf.h>
 #include <stdio.h>
-#include "game.h"
-#include "sdl_loop.h"
+#include "../include/game.h"
+#include "../include/trifles.h"
+#include "../include/sdl_loop.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -16,6 +18,11 @@ int main(int argc, char** argv) {
         return -1;
     }
 
+    if (TTF_Init() < 0) {
+        fprintf(stderr, "TTF Init Error: %s\n", TTF_GetError());
+        return 1;
+    }
+
     SDL_Window* window = SDL_CreateWindow (
         GAME_TITLE,  SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED, WIN_X, WIN_Y,
@@ -27,10 +34,16 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (!renderer) {
         fputs(SDL_GetError(), stderr);
         return -1;
+    }
+
+    TTF_Font* font = TTF_OpenFont("assets/Pixellettersfull-BnJ5.ttf", 28);
+    if (!font) {
+        fprintf(stderr, "Шрифт не найден: %s\n", TTF_GetError());
+        return 1;
     }
 
     srand(time(NULL));
@@ -49,6 +62,8 @@ int main(int argc, char** argv) {
         switch (state.gamescreen) {
             case NAME_INPUT:
                 last_time = SDL_GetTicks();
+                render_name_input(renderer, font, state.player_name);
+                break;
                 //render_name_input(renderer, state.player_name);
             case MENU:
     		    last_time = SDL_GetTicks();
@@ -78,25 +93,47 @@ int main(int argc, char** argv) {
         }
 
         SDL_Event event;
+
         while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_MOUSEBUTTONDOWN)
-                game_handle_click(&state, event.button.x, event.button.y);
 
             if (event.type == SDL_QUIT) {
                 state.is_running = false;
                 break;
             }
 
+            if (event.type == SDL_MOUSEBUTTONDOWN) {
+                game_handle_click(
+                    &state,
+                    event.button.x,
+                    event.button.y
+                );
+            }
+
+            if (state.gamescreen != NAME_INPUT)
+                continue;
+
             if (event.type == SDL_TEXTINPUT) {
-                ;// game_text_handle_input(&state, event.text.text, false);
+                game_text_handle_input(
+                    &state,
+                    event.text.text,
+                    false
+                );
             }
 
-            if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_RETURN) {
-                ;// game_text_handle_input(&state, "", true);
-            }
-        }   // https://www.youtube.com/watch?v=66xQ67ckWNQ
+            if (event.type == SDL_KEYDOWN) {
 
-        if (!state.is_running) break;
+                if (event.key.keysym.scancode == SDL_SCANCODE_BACKSPACE)
+                    remove_last_utf8_char(state.player_name);
+
+                else if (event.key.keysym.scancode == SDL_SCANCODE_RETURN) {
+                    game_text_handle_input(
+                        &state,
+                        NULL,
+                        true
+                    );
+                }
+            }
+        }
 
         SDL_Delay(16);
     }
@@ -107,6 +144,8 @@ int main(int argc, char** argv) {
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    TTF_CloseFont(font);
+    TTF_Quit();
     SDL_Quit();
     return 0;
 }

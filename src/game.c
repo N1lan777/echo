@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include "game.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -157,7 +158,7 @@ void game_update (GameState* state, float dt)
                 }
             }
 
-            state->blocks[i].hp--;
+            state->blocks[i].hp = false;
             state->score++;
 
             /* One block per frame */
@@ -233,7 +234,7 @@ void game_handle_click(GameState* state, int mouse_x, int mouse_y)
 
 void game_save(Leaderboard* board)
 {
-    FILE* file = fopen(SCORES_FILE,"w");
+    FILE* file = fopen(SCORES_FILE,"a");
     if (file == NULL)
         return;
     for (int i = 0; i < board->count_scores; ++i)
@@ -294,10 +295,23 @@ void game_sort(Leaderboard* board)
 
 
 void game_text_handle_input(GameState* state, const char* text, bool enter) {
-   if (state->gamescreen != NAME_INPUT)
-       return;
-   if (enter && strlen(state->player_name)!=0) {
-      state->gamescreen = MENU;
-   }
-   if (!enter) strcat(state->player_name,text);
+
+    if (state->gamescreen != NAME_INPUT)
+        return;
+
+    if (enter) {
+        if (state->player_name[0] != '\0')
+            state->gamescreen = MENU;
+
+        return;
+    }
+
+    if (text == NULL)
+        return;
+
+    size_t current_len = strlen(state->player_name);
+    size_t input_len = strlen(text);
+
+    if (current_len + input_len < MAX_TEXT_LEN)
+        strcat(state->player_name, text);
 }

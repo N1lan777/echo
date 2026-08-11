@@ -54,3 +54,6 @@
 #define PADDLE_W 80
 #define PADDLE_H 20
 #define PADDLE_VX 300
+
+// Text
+#define MAX_TEXT_LEN 255
