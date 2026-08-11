@@ -47,6 +47,9 @@ int main(int argc, char** argv) {
     Uint32 last_time, Now_time;
     while (state.is_running) {
         switch (state.gamescreen) {
+            case NAME_INPUT:
+                last_time = SDL_GetTicks();
+                //render_name_input(renderer, state.player_name);
             case MENU:
     		    last_time = SDL_GetTicks();
                 render_menu(renderer);
@@ -89,7 +92,7 @@ int main(int argc, char** argv) {
         SDL_Delay(16);
     }
 
-    game_leaderboard(&board,"player",state.score);
+    game_leaderboard(&board,state.player_name,state.score);
     game_sort(&board);
     game_save(&board);
 
