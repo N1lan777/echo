@@ -115,7 +115,6 @@ static inline void _render_menu_impl(SDL_Renderer* renderer)
         0, 0, 255, 255
     };
 
-    _render_pause_b_impl(renderer);
     _render_record_b_impl(renderer);
 
     SDL_SetRenderDrawColor(renderer, cgb.r, cgb.g, cgb.b, cgb.a);
@@ -166,6 +165,12 @@ static inline void _render_game_impl(GameState* state, SDL_Renderer* renderer, c
 }
 
 
+static inline void _render_name_input_impl(SDL_Renderer* renderer, char* name)
+{
+    ;
+}
+
+
 void render_record(SDL_Renderer* renderer)
 {
     _render_record_impl(renderer);
@@ -181,4 +186,10 @@ void render_game(GameState *state, SDL_Renderer *renderer, const SDL_Color b_c[]
 void render_menu(SDL_Renderer* renderer)
 {
     _render_menu_impl(renderer);
+}
+
+
+void render_name_input(SDL_Renderer* renderer, char* name)
+{
+    _render_name_input_impl(renderer, name);
 }

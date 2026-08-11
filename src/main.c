@@ -76,13 +76,22 @@ int main(int argc, char** argv) {
 
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_MOUSEBUTTONDOWN)
+                game_handle_click(&state, event.button.x, event.button.y);
+
             if (event.type == SDL_QUIT) {
                 state.is_running = false;
                 break;
             }
-            if (event.type == SDL_MOUSEBUTTONDOWN)
-                game_handle_click(&state, event.button.x, event.button.y);
-        }   //https://www.youtube.com/watch?v=66xQ67ckWNQ
+
+            if (event.type == SDL_TEXTINPUT) {
+                ;// game_text_handle_input(&state, event.text.text, false);
+            }
+
+            if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_RETURN) {
+                ;// game_text_handle_input(&state, "", true);
+            }
+        }   // https://www.youtube.com/watch?v=66xQ67ckWNQ
 
         if (!state.is_running) break;
 
