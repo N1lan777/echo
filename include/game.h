@@ -37,8 +37,8 @@ typedef struct {
 } Block;
 // player data
 typedef struct {
-    short score;
-    char name[32];
+    int score;
+    char name[MAX_TEXT_LEN];
 } ScoreEntry;
 
 typedef struct {
@@ -46,7 +46,7 @@ typedef struct {
     Paddle paddle;
     Block blocks[MAX_BLOCKS];
     GameScreen gamescreen;
-    short score;
+    int score;
     bool is_running;
     char player_name[MAX_TEXT_LEN];
 } GameState;
@@ -62,6 +62,6 @@ void game_handle_input(GameState* state, const Uint8* keys, float dt);
 void game_handle_click(GameState* state, int mouse_x, int mouse_y);
 void game_loading(Leaderboard* board);
 void game_save(Leaderboard* board);
-void game_leaderboard(Leaderboard* board, const char* name, short score);
+void game_leaderboard(Leaderboard* board, const char* name, int score);
 void game_sort(Leaderboard* board); 
 void game_text_handle_input(GameState* state, const char* text, bool enter);

@@ -1,5 +1,5 @@
 #include <SDL2/SDL.h>
-#include "game.h"
+#include "../include/game.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -238,7 +238,7 @@ void game_save(Leaderboard* board)
     if (file == NULL)
         return;
     for (int i = 0; i < board->count_scores; ++i)
-        fprintf(file,"%s,%hd ",board->scores[i].name, board->scores[i].score);
+        fprintf(file,"%s,%d ",board->scores[i].name, board->scores[i].score);
     fclose(file);
 }
 
@@ -254,7 +254,7 @@ void game_loading(Leaderboard* board)
     int i;
     for (i = 0;
         i < MAX_SCORES &&
-        fscanf(file, "%s,%hd ",
+        fscanf(file, "%s,%d ",
                board->scores[i].name,
                &(board->scores[i].score)) == 2;
         ++i);
@@ -263,7 +263,7 @@ void game_loading(Leaderboard* board)
 }
 
 
-void game_leaderboard(Leaderboard* board, const char * name, short score)
+void game_leaderboard(Leaderboard* board, const char * name, int score)
 {
     if (board->count_scores < MAX_SCORES) {
         for (int i = 0; i< board->count_scores; ++i)
@@ -276,8 +276,7 @@ void game_leaderboard(Leaderboard* board, const char * name, short score)
             }
 
         strcpy(board->scores[board->count_scores].name,name);
-        board->scores[board->count_scores].score = score;
-        board->count_scores++;
+        board->scores[board->count_scores++].score = score;
     }
 }
 

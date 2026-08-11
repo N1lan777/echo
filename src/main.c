@@ -85,7 +85,7 @@ int main(int argc, char** argv) {
                 break;
             case RECORD:
                 last_time = SDL_GetTicks();
-                render_record(renderer);
+                render_record(renderer, font, &board);
                 break;
             default:
                 fputs("Catched undefined behavior\n", stderr);

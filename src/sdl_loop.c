@@ -1,8 +1,8 @@
 #include <SDL2/SDL.h>
 #include <SDL_ttf.h>
 #include <stdbool.h>
-#include "sdl_loop.h"
-#include "game.h"
+#include "../include/sdl_loop.h"
+#include "../include/game.h"
 
 
 // Func draw circle
@@ -89,10 +89,62 @@ static inline void _render_record_b_impl(SDL_Renderer* renderer)
     SDL_RenderFillRect(renderer, &record_b);
 }
 
-static inline void _render_record_impl(SDL_Renderer* renderer)
-{   // Black background
+void _render_record_impl(
+    SDL_Renderer *renderer,
+    TTF_Font *font,
+    const Leaderboard *board
+)
+{
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
+
+    SDL_Color color = {255, 255, 255, 255};
+
+    for (int i = 0; i < board->count_scores; ++i) {
+
+        char text[MAX_TEXT_LEN];
+
+        snprintf(
+            text,
+            sizeof(text),
+            "%d. %s  %d",
+            i + 1,
+            board->scores[i].name,
+            board->scores[i].score
+        );
+
+        SDL_Surface *surface =
+            TTF_RenderUTF8_Blended(font, text, color);
+
+        if (!surface)
+            continue;
+
+        SDL_Texture *texture =
+            SDL_CreateTextureFromSurface(renderer, surface);
+
+        if (!texture) {
+            SDL_FreeSurface(surface);
+            continue;
+        }
+
+        SDL_Rect dst = {
+            100,
+            100 + i * 50,
+            surface->w,
+            surface->h
+        };
+
+        SDL_RenderCopy(
+            renderer,
+            texture,
+            NULL,
+            &dst
+        );
+
+
+        SDL_DestroyTexture(texture);
+        SDL_FreeSurface(surface);
+    }
 
     _render_back_b_impl(renderer);
     SDL_RenderPresent(renderer);
@@ -191,8 +243,8 @@ static inline void _render_name_input_impl(SDL_Renderer* renderer, TTF_Font *fon
 
             if (texture) {
                 SDL_Rect dst = {
-                    50,
-                    150,
+                    WIN_X / 2 - WIN_X / 4,
+                    WIN_Y / 2 - WIN_Y / 4,
                     surface->w,
                     surface->h
                 };
@@ -215,9 +267,9 @@ static inline void _render_name_input_impl(SDL_Renderer* renderer, TTF_Font *fon
 }
 
 
-void render_record(SDL_Renderer* renderer)
+void render_record(SDL_Renderer* renderer, TTF_Font *font, const Leaderboard *board)
 {
-    _render_record_impl(renderer);
+    _render_record_impl(renderer, font, board);
 }
 
 // Call func render game
