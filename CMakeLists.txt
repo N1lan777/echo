@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.20)
 set(CMAKE_POLICY_VERSION_MINIMUM 3.5 CACHE STRING "" FORCE)
 
 project(echo C)
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 include(FetchContent)
 FetchContent_Declare(
@@ -26,7 +27,6 @@ FetchContent_MakeAvailable(SDL2_ttf)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 add_executable(echo src/main.c src/sdl_loop.c src/game.c src/trifles.c)
 

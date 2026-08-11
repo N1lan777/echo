@@ -235,10 +235,10 @@ void game_handle_click(GameState* state, int mouse_x, int mouse_y)
 void game_save(Leaderboard* board)
 {
     FILE* file = fopen(SCORES_FILE,"a");
-    if (file == NULL)
-        return;
-    for (int i = 0; i < board->count_scores; ++i)
+    if (file == NULL) return;
+    for (int i = 0; i < board->count_scores; ++i){
         fprintf(file,"%s,%hd ",board->scores[i].name, board->scores[i].score);
+    }
     fclose(file);
 }
 
@@ -269,10 +269,11 @@ void game_leaderboard(Leaderboard* board, const char * name, short score)
         for (int i = 0; i< board->count_scores; ++i)
             if (
                 strcmp(board->scores[i].name,name) == 0
-                && board->scores[i].score < score
-            ) {
-                board->scores[i].score = score;
-                return;
+            ) { 
+                if (board->scores[i].score > score){
+                    board->scores[i].score = score;
+                    return;
+                }
             }
 
         strcpy(board->scores[board->count_scores].name,name);

@@ -191,8 +191,8 @@ static inline void _render_name_input_impl(SDL_Renderer* renderer, TTF_Font *fon
 
             if (texture) {
                 SDL_Rect dst = {
-                    50,
-                    150,
+                    WIN_X / 2 - WIN_X / 4,
+                    WIN_Y / 2,
                     surface->w,
                     surface->h
                 };
