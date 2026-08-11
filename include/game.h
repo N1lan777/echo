@@ -64,4 +64,4 @@ void game_loading(Leaderboard* board);
 void game_save(Leaderboard* board);
 void game_leaderboard(Leaderboard* board, const char* name, short score);
 void game_sort(Leaderboard* board); 
-void game_text_handle_input(GameState* state, const char* text);
+void game_text_handle_input(GameState* state, const char* text, bool enter);

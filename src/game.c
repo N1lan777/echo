@@ -12,8 +12,9 @@ void game_init(GameState* state, bool is_start)
     if (is_start) {
         state->score = 0;
         state->is_running = true;
-        state->gamescreen = MENU; 
+        state->gamescreen = NAME_INPUT; 
     }
+    state->player_name[0] = '\0';
 
     state->ball.x = WIN_X / 2;
     state->ball.y = WIN_Y / 2;
@@ -292,8 +293,11 @@ void game_sort(Leaderboard* board)
 }
 
 
-void game_text_handle_input(GameState* state, const char* text) {
+void game_text_handle_input(GameState* state, const char* text, bool enter) {
    if (state->gamescreen != NAME_INPUT)
        return;
-   strcat(state->player_name,text);
+   if (enter && strlen(state->player_name)!=0) {
+      state->gamescreen = MENU;
+   }
+   if (!enter) strcat(state->player_name,text);
 }
