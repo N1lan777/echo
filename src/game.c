@@ -237,14 +237,8 @@ void game_save(Leaderboard* board)
     FILE* file = fopen(SCORES_FILE,"w");
     if (file == NULL)
         return;
-    printf("SAVING %d SCORES\n", board->count_scores);
-
-    for (int i = 0; i < board->count_scores; ++i) {
-        printf("%s = %d\n",
-               board->scores[i].name,
-               board->scores[i].score);
+    for (int i = 0; i < board->count_scores; ++i)
         fprintf(file,"%s,%d\n", board->scores[i].name, board->scores[i].score);
-    }
     fclose(file);
 }
 
