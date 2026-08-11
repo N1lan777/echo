@@ -92,13 +92,15 @@ static inline void _render_record_b_impl(SDL_Renderer* renderer)
 void _render_record_impl(
     SDL_Renderer *renderer,
     TTF_Font *font,
-    const Leaderboard *board
+    Leaderboard *board
 )
 {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
     SDL_Color color = {255, 255, 255, 255};
+
+    game_sort(board);
 
     for (int i = 0; i < board->count_scores; ++i) {
 

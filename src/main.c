@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_stdinc.h>
 #include <SDL_ttf.h>
 #include <stdio.h>
 #include "../include/game.h"
@@ -9,7 +10,7 @@
 
 int main(int argc, char** argv) {
     GameState state;
-    Leaderboard board;
+    Leaderboard board = {0};
     game_init(&state,true);
     game_loading(&board);
 
@@ -43,17 +44,19 @@ int main(int argc, char** argv) {
     TTF_Font* font = TTF_OpenFont("assets/Pixellettersfull-BnJ5.ttf", 28);
     if (!font) {
         fprintf(stderr, "Шрифт не найден: %s\n", TTF_GetError());
-        return 1;
+        return -1;
     }
+
+    SDL_Color colors_for_blocks[] = {
+        {255, 0, 0, 255},
+        {0, 255, 0, 255},
+        {0, 0, 255, 255},
+    };
 
     srand(time(NULL));
     SDL_Color blocks_color[MAX_BLOCKS];
-    for (int i = 0; i < MAX_BLOCKS; i++) {
-        blocks_color[i].r = rand()%256;
-        blocks_color[i].g = rand()%256;
-        blocks_color[i].b = rand()%256;
-        blocks_color[i].a = rand()%256;
-    }
+    for (int i = 0; i < MAX_BLOCKS; i++)
+        blocks_color[i] = colors_for_blocks[rand()%3];
 
 
     SDL_StartTextInput();

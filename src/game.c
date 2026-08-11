@@ -234,11 +234,17 @@ void game_handle_click(GameState* state, int mouse_x, int mouse_y)
 
 void game_save(Leaderboard* board)
 {
-    FILE* file = fopen(SCORES_FILE,"a");
+    FILE* file = fopen(SCORES_FILE,"w");
     if (file == NULL)
         return;
-    for (int i = 0; i < board->count_scores; ++i)
-        fprintf(file,"%s,%d ",board->scores[i].name, board->scores[i].score);
+    printf("SAVING %d SCORES\n", board->count_scores);
+
+    for (int i = 0; i < board->count_scores; ++i) {
+        printf("%s = %d\n",
+               board->scores[i].name,
+               board->scores[i].score);
+        fprintf(file,"%s,%d\n", board->scores[i].name, board->scores[i].score);
+    }
     fclose(file);
 }
 
@@ -254,9 +260,9 @@ void game_loading(Leaderboard* board)
     int i;
     for (i = 0;
         i < MAX_SCORES &&
-        fscanf(file, "%s,%d ",
+        fscanf(file, " %[^,],%d",
                board->scores[i].name,
-               &(board->scores[i].score)) == 2;
+               &board->scores[i].score) == 2;
         ++i);
     board->count_scores = i;
     fclose(file);
@@ -265,38 +271,25 @@ void game_loading(Leaderboard* board)
 
 void game_leaderboard(Leaderboard* board, const char * name, int score)
 {
-    if (board->count_scores < MAX_SCORES) {
-<<<<<<< HEAD
-        for (int i = 0; i< board->count_scores; ++i) {
-            if (strcmp(board->scores[i].name,name) == 0) {
-                if (board->scores[i].score < score) {
-=======
-        for (int i = 0; i< board->count_scores; ++i){
-            if ( strcmp(board->scores[i].name,name) == 0) { 
-                if (board->scores[i].score > score){
->>>>>>> 23ecd5778af1cd39919650fbae7ec3d650cbd3fd
-                    board->scores[i].score = score;
-                    continue;
-                }
-                else continue;
-            }
-
-<<<<<<< HEAD
-            strcpy(board->scores[board->count_scores].name,name);
-            board->scores[board->count_scores++].score = score;
-=======
-        strcpy(board->scores[board->count_scores].name,name);
-        board->scores[board->count_scores++].score = score;
->>>>>>> 23ecd5778af1cd39919650fbae7ec3d650cbd3fd
+    for (int i = 0; i< board->count_scores; ++i) {
+        if (strcmp(board->scores[i].name,name) == 0) {
+            if (board->scores[i].score < score)
+                board->scores[i].score = score;
+            return;
         }
     }
+        if (board->count_scores >= MAX_SCORES)
+            return;
+
+        strcpy(board->scores[board->count_scores].name,name);
+        board->scores[board->count_scores++].score = score;
 }
 
 void game_sort(Leaderboard* board)
 {
     for (int i = 0; i < board->count_scores - 1; ++i)
         for (int j = 0; j < board->count_scores - 1 - i; ++j)
-            if (board->scores[j].score > board->scores[j+1].score){
+            if (board->scores[j].score < board->scores[j+1].score){
                 ScoreEntry temp = board->scores[j];
                 board->scores[j] = board->scores[j+1];
                 board->scores[j+1] = temp;
