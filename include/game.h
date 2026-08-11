@@ -38,7 +38,7 @@ typedef struct {
 // player data
 typedef struct {
     short score;
-    char name[32];
+    char name[MAX_TEXT_LEN];
 } ScoreEntry;
 
 typedef struct {
