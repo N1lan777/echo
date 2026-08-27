@@ -1,36 +1,154 @@
-#include "game.h"
-#include <SDL.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_stdinc.h>
+#include <SDL_ttf.h>
+#include <stdio.h>
+#include "../include/game.h"
+#include "../include/trifles.h"
+#include "../include/sdl_loop.h"
+#include <stdlib.h>
+#include <time.h>
 
-int main(int argc, char* argv[]) {
+int main(int argc, char** argv) {
     GameState state;
-    game_init(&state);
-    SDL_Init(SDL_INIT_VIDEO);
-    SDL_Window* win = SDL_CreateWindow("echo", 100, 100, 800, 600, SDL_WINDOW_SHOWN);
-    Uint32 last_time = SDL_GetTicks();
+    Leaderboard board = {0};
+    game_init(&state,true);
+    game_loading(&board);
+
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        fputs(SDL_GetError(), stderr);
+        return -1;
+    }
+
+    if (TTF_Init() < 0) {
+        fprintf(stderr, "TTF Init Error: %s\n", TTF_GetError());
+        return 1;
+    }
+
+    SDL_Window* window = SDL_CreateWindow (
+        GAME_TITLE,  SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED, WIN_X, WIN_Y,
+        SDL_WINDOW_SHOWN
+    );
+
+    if (!window) {
+        fputs(SDL_GetError(), stderr);
+        return -1;
+    }
+
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    if (!renderer) {
+        fputs(SDL_GetError(), stderr);
+        return -1;
+    }
+
+    TTF_Font* font = TTF_OpenFont("assets/Pixellettersfull-BnJ5.ttf", 28);
+    if (!font) {
+        fprintf(stderr, "Шрифт не найден: %s\n", TTF_GetError());
+        return -1;
+    }
+
+    SDL_Color colors_for_blocks[] = {
+        {255, 0, 0, 255},
+        {0, 255, 0, 255},
+        {0, 0, 255, 255},
+    };
+
+    srand(time(NULL));
+    SDL_Color blocks_color[MAX_BLOCKS];
+    for (int i = 0; i < MAX_BLOCKS; i++)
+        blocks_color[i] = colors_for_blocks[rand()%3];
+
+
+    SDL_StartTextInput();
+    Uint32 last_time, Now_time;
     while (state.is_running) {
+        switch (state.gamescreen) {
+            case NAME_INPUT:
+                last_time = SDL_GetTicks();
+                render_name_input(renderer, font, state.player_name);
+                break;
+                //render_name_input(renderer, state.player_name);
+            case MENU:
+    		    last_time = SDL_GetTicks();
+                render_menu(renderer);
+                break;
+            case GAME:
+                Now_time = SDL_GetTicks();
+                float dt = (Now_time - last_time) / 1000.0f ;
+                last_time = Now_time;
+
+                const Uint8* keys = SDL_GetKeyboardState(NULL);
+                game_handle_input(&state, keys, dt);
+                game_update(&state, dt);
+
+                render_game(&state, renderer, blocks_color);
+                break;
+            case PAUSE:
+    		    last_time = SDL_GetTicks();
+                break;
+            case RECORD:
+                last_time = SDL_GetTicks();
+                render_record(renderer, font, &board);
+                break;
+            default:
+                fputs("Catched undefined behavior\n", stderr);
+                break;
+        }
+
         SDL_Event event;
+
         while (SDL_PollEvent(&event)) {
+
             if (event.type == SDL_QUIT) {
                 state.is_running = false;
+                break;
             }
-            if (event.type == SDL_MOUSEBUTTONDOWN){
-                game_handle_click(&state, event.button.x, event.button.y);
+
+            if (event.type == SDL_MOUSEBUTTONDOWN) {
+                game_handle_click(
+                    &state,
+                    event.button.x,
+                    event.button.y
+                );
+            }
+
+            if (state.gamescreen != NAME_INPUT)
+                continue;
+
+            if (event.type == SDL_TEXTINPUT) {
+                game_text_handle_input(
+                    &state,
+                    event.text.text,
+                    false
+                );
+            }
+
+            if (event.type == SDL_KEYDOWN) {
+
+                if (event.key.keysym.scancode == SDL_SCANCODE_BACKSPACE)
+                    remove_last_utf8_char(state.player_name);
+
+                else if (event.key.keysym.scancode == SDL_SCANCODE_RETURN) {
+                    game_text_handle_input(
+                        &state,
+                        NULL,
+                        true
+                    );
+                }
             }
         }
-        Uint32 Now_time = SDL_GetTicks();
-        float dt    = (Now_time - last_time)/ 1000.0f ;
-        last_time = Now_time;
 
-        const Uint8* keys = SDL_GetKeyboardState(NULL);
-        game_handle_input(&state, keys, dt);
-        game_update(&state, dt);
-
-        // TODO: render(&state, renderer); — Alegen добавляет здесь свой вызов рендера
-        
         SDL_Delay(16);
-
     }
-    SDL_DestroyWindow(win);
+
+    game_leaderboard(&board,state.player_name,state.score);
+    game_sort(&board);
+    game_save(&board);
+
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    TTF_CloseFont(font);
+    TTF_Quit();
     SDL_Quit();
     return 0;
 }
